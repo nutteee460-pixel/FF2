@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Transfer, ArrowRight, Clock } from 'lucide-react';
+import { ArrowLeftRight, ArrowRight } from 'lucide-react';
 import { getDaysRemaining } from '@/lib/utils';
 
 interface Profile {
@@ -136,7 +136,7 @@ export default function TransferPage() {
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="bg-white rounded-xl shadow-md p-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-            <Transfer className="w-6 h-6" />
+            <ArrowLeftRight className="w-6 h-6" />
             โอนย้ายวันใช้งาน
           </h1>
 
