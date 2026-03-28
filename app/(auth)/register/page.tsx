@@ -40,8 +40,8 @@ export default function RegisterPage() {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร');
+    if (formData.password.length < 8) {
+      setError('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร');
       return;
     }
 
@@ -59,6 +59,7 @@ export default function RegisterPage() {
         body: JSON.stringify({
           email: formData.email.trim(),
           password: formData.password,
+          confirmPassword: formData.confirmPassword,
           accountType,
           acceptTerms: true,
         }),
@@ -159,7 +160,7 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={handleChange}
                   className="w-full pl-9 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-                  placeholder="6+ ตัว"
+                  placeholder="8+ ตัว"
                   minLength={6}
                   required
                   autoComplete="new-password"

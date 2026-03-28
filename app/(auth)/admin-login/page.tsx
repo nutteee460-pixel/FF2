@@ -19,10 +19,12 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/auth/login', {
+      // ต้องใช้ admin-login เพื่อตั้งคุกกี้ ff2_admin_session (ห้ามใช้ /api/auth/login)
+      const res = await fetch('/api/auth/admin-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+        credentials: 'include',
       });
 
       const data = await res.json();
@@ -34,7 +36,7 @@ export default function AdminLoginPage() {
 
       if (data.user?.role !== 'ADMIN') {
         setError('คุณไม่มีสิทธิ์เข้าหลังบ้าน');
-        await fetch('/api/auth/logout', { method: 'POST' });
+        await fetch('/api/auth/admin-logout', { method: 'POST' });
         return;
       }
 
