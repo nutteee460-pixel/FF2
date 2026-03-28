@@ -30,7 +30,7 @@ export default function AdminSettingsPage() {
 
   const fetchSettings = async () => {
     try {
-      const res = await fetch('/api/settings');
+      const res = await fetch('/api/settings', { credentials: 'include' });
       const data = await res.json();
       if (data) {
         setSettings({
@@ -53,15 +53,19 @@ export default function AdminSettingsPage() {
 
     try {
       const res = await fetch('/api/settings', {
-        method: 'PUT',
+        method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),
       });
 
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setMessage('บันทึกสำเร็จ');
       } else {
-        setMessage('เกิดข้อผิดพลาด');
+        setMessage(
+          typeof data?.message === 'string' ? data.message : 'เกิดข้อผิดพลาด'
+        );
       }
     } catch (error) {
       setMessage('เกิดข้อผิดพลาด');

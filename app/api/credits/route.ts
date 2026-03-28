@@ -163,8 +163,8 @@ export async function POST(request: Request) {
       (profile.superExpiry && new Date(profile.superExpiry) > currentTime) ||
       (profile.modelExpiry && new Date(profile.modelExpiry) > currentTime);
 
-    // คำขอยืนยันตัวตนอนุญาตแม้ยังไม่มีวันคงเหลือ (โปรไฟล์รอตรวจได้ส่งสลิปได้)
-    if (type !== 'VERIFY_IDENTITY' && !hasActiveDays) {
+    // เติมวันทั่วไป / ยืนยันตัวตน: อนุญาตแม้ยังไม่มีวันคงเหลือ (ไม่บังคับให้มีโพสต์อนุมัติก่อน)
+    if (type !== 'VERIFY_IDENTITY' && type !== 'TOPUP' && !hasActiveDays) {
       return NextResponse.json(
         { message: 'โปรไฟล์นี้ยังไม่มีวันใช้งาน กรุณาสร้างโพสต์และรอการอนุมัติก่อน' },
         { status: 400 }

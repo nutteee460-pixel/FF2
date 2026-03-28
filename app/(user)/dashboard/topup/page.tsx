@@ -34,7 +34,8 @@ export default function TopupPage() {
   const [submitting, setSubmitting] = useState(false);
   const [history, setHistory] = useState<CreditHistory[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [hasApprovedProfile, setHasApprovedProfile] = useState(false);
+  /** มีโปรไฟล์อย่างน้อย 1 รายการก็เติมวันทั่วไปได้ ไม่ต้องรอโพสต์อนุมัติ */
+  const [hasAnyProfile, setHasAnyProfile] = useState(false);
   const [selectedProfileId, setSelectedProfileId] = useState<string>('');
   const [topupAmount, setTopupAmount] = useState('');
   const [topupProof, setTopupProof] = useState('');
@@ -60,12 +61,9 @@ export default function TopupPage() {
           const profilesData = await profilesRes.json();
           const list = profilesData.profiles || [];
           setProfiles(list);
-          const approved = list.filter(
-            (p: Profile) => p.freeExpiry || p.superExpiry || p.modelExpiry
-          );
-          setHasApprovedProfile(approved.length > 0);
-          if (approved.length > 0) {
-            setSelectedProfileId((prev) => prev || approved[0].id);
+          setHasAnyProfile(list.length > 0);
+          if (list.length > 0) {
+            setSelectedProfileId((prev) => prev || list[0].id);
           }
         }
 
@@ -111,8 +109,8 @@ export default function TopupPage() {
     setError('');
     setSuccess('');
 
-    if (!hasApprovedProfile) {
-      setError('ต้องมีโปรไฟล์ที่มีวันใช้งานอยู่ก่อน กรุณาสร้างโพสต์และรออนุมัติ');
+    if (!hasAnyProfile || !profiles.length) {
+      setError('กรุณาสร้างโปรไฟล์ก่อนจึงจะเติมวันใช้งานทั่วไปได้');
       return;
     }
     if (!selectedProfileId) {
@@ -219,25 +217,25 @@ export default function TopupPage() {
         </p>
       </div>
 
-      {!hasApprovedProfile && (
+      {!hasAnyProfile && (
         <div className="bg-white rounded-xl shadow-md p-6">
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex gap-3">
             <AlertCircle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
             <div className="text-sm text-yellow-800">
-              <p className="font-semibold">ต้องสร้างโพสต์และรออนุมัติก่อน</p>
-              <p className="mt-1">จึงจะเติมวันใช้งานทั่วไปได้</p>
+              <p className="font-semibold">ยังไม่มีโปรไฟล์</p>
+              <p className="mt-1">สร้างโปรไฟล์ก่อน จึงจะเลือกโปรไฟล์และส่งสลิปเติมวันใช้งานทั่วไปได้</p>
               <Link
-                href="/dashboard/posts/new"
+                href="/dashboard/profiles/new"
                 className="inline-block mt-3 bg-primary-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-600"
               >
-                ไปสร้างโพสต์
+                ไปสร้างโปรไฟล์
               </Link>
             </div>
           </div>
         </div>
       )}
 
-      {hasApprovedProfile && profiles.length > 0 && (
+      {hasAnyProfile && profiles.length > 0 && (
         <div className="bg-white rounded-xl shadow-md p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4">ส่งสลิปเติมวันใช้งานทั่วไป</h2>
           {error && (
