@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #E91E63;
+  --secondary: #9C27B0;
+  --accent: #FF5722;
+}
+
+body {
+  font-family: 'Kanit', 'Prompt', sans-serif;
+  background-color: #FAFAFA;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E91E63;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c71b52;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.25s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scrollbar hide utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: all 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 40px rgba(233, 30, 99, 0.15);
+}
+
+/* Telegram widget pulse */
+.telegram-pulse {
+  animation: telegramPulse 2s infinite;
+}
+
+@keyframes telegramPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 136, 204, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(0, 136, 204, 0);
+  }
+}
+
+/* Tier badges */
+.badge-super {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #333;
+}
+
+.badge-model {
+  background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+  color: #333;
+}
+
+.badge-free {
+  background: #9E9E9E;
+  color: white;
+}
