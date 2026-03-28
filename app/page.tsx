@@ -111,7 +111,7 @@ function ProfileSection({
         <div className="mt-12 text-center">
           <Link
             href="/models"
-            className="inline-flex items-center justify-center rounded-full border border-nong-purple/25 bg-white px-8 py-3 text-sm font-semibold text-nong-purple shadow-sm transition hover:border-nong-purple/40 hover:bg-violet-50"
+            className="inline-flex items-center justify-center rounded-full border border-sky-200 bg-white px-8 py-3 text-sm font-semibold text-sky-700 shadow-sm transition hover:border-sky-300 hover:bg-sky-50"
           >
             ดูทั้งหมด
           </Link>
@@ -234,24 +234,24 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="relative overflow-hidden bg-gradient-to-br from-nong-purple via-[#5b2c87] to-nong-magenta text-white">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-black/10" />
-        <PublicHeader variant="hero" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-sky-50 via-white to-blue-50/90 text-slate-900">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(14,165,233,0.12),transparent_55%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(37,99,235,0.06),transparent_50%)]" />
+        <PublicHeader variant="hero" heroLight />
         <div className="relative z-10 mx-auto max-w-7xl px-4 pb-20 pt-6 sm:px-6 lg:px-8 lg:pb-24 lg:pt-10">
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-16">
             <div className="max-w-xl lg:max-w-none">
-              <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-[2.75rem] lg:leading-[1.15]">
+              <h1 className="text-4xl font-bold leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-[2.75rem] lg:leading-[1.15]">
                 FF2 — แพลตฟอร์มนางแบบและผู้ขายรูปภาพ
               </h1>
-              <p className="mt-6 text-lg leading-relaxed text-white/85 sm:text-xl">
+              <p className="mt-6 text-lg leading-relaxed text-slate-600 sm:text-xl">
                 ค้นหาโปรไฟล์ จังหวัด และช่วงเวลาที่ต้องการ ในหน้าเดียว โทนสีและเลย์เอาต์เน้นความโปร่ง อ่านง่าย
               </p>
               <a
                 href={telegramHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-8 inline-flex items-center gap-3 rounded-full border border-white/35 bg-white/15 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/25"
+                className="mt-8 inline-flex items-center gap-3 rounded-full border border-sky-200/80 bg-white/90 px-6 py-2.5 text-sm font-semibold text-sky-800 shadow-sm backdrop-blur-sm transition hover:border-sky-300 hover:bg-white"
               >
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0088cc]">
                   <svg className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -262,7 +262,7 @@ export default function HomePage() {
               </a>
             </div>
 
-            <div className="rounded-[2rem] bg-white p-6 shadow-2xl shadow-nong-purple/25 ring-1 ring-black/5 sm:p-8 sm:rounded-[2.25rem]">
+            <div className="rounded-2xl bg-white p-5 shadow-xl shadow-sky-200/40 ring-1 ring-sky-100/80 sm:p-6 sm:rounded-3xl">
               <form onSubmit={handleSearch} className="space-y-5">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-gray-600">เลือกจังหวัด</label>
@@ -270,7 +270,7 @@ export default function HomePage() {
                     <select
                       value={filterProvince}
                       onChange={(e) => setFilterProvince(e.target.value)}
-                      className="w-full appearance-none rounded-2xl border border-gray-200 bg-gray-50/80 py-3.5 pl-4 pr-11 text-gray-900 outline-none transition focus:border-nong-purple/40 focus:bg-white focus:ring-2 focus:ring-nong-magenta/20"
+                      className="w-full appearance-none rounded-xl border border-gray-200 bg-sky-50/50 py-2.5 pl-3 pr-10 text-sm text-gray-900 outline-none transition focus:border-sky-400 focus:bg-white focus:ring-2 focus:ring-sky-200"
                     >
                       <option value="">ทุกจังหวัด</option>
                       {THAI_PROVINCES.map((p) => (
@@ -279,7 +279,7 @@ export default function HomePage() {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                   </div>
                 </div>
 
@@ -292,10 +292,10 @@ export default function HomePage() {
                         type="button"
                         onClick={() => setDateWindow(tab.id)}
                         className={cn(
-                          'rounded-2xl py-2.5 text-center text-xs font-semibold transition sm:text-sm',
+                          'rounded-xl py-2 text-center text-xs font-semibold transition sm:text-sm',
                           dateWindow === tab.id
-                            ? 'bg-gradient-to-r from-nong-purple to-nong-magenta text-white shadow-md'
-                            : 'bg-rose-50/80 text-gray-700 hover:bg-rose-100/90'
+                            ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md'
+                            : 'bg-sky-50 text-gray-700 hover:bg-sky-100'
                         )}
                       >
                         {tab.label}
@@ -305,23 +305,25 @@ export default function HomePage() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-medium text-gray-600">คำค้นหา</label>
-                  <div className="relative flex items-center rounded-2xl border border-gray-200 bg-gray-50/80 focus-within:border-nong-purple/40 focus-within:bg-white focus-within:ring-2 focus-within:ring-nong-magenta/20">
-                    <Search className="ml-4 h-5 w-5 text-gray-400" />
-                    <input
-                      type="text"
-                      value={searchInput}
-                      onChange={(e) => setSearchInput(e.target.value)}
-                      placeholder="ชื่อ, เขต, คำอธิบาย..."
-                      className="w-full rounded-2xl bg-transparent py-3.5 pl-3 pr-4 text-gray-900 placeholder:text-gray-400 focus:outline-none"
-                    />
+                  <label className="mb-1.5 block text-sm font-medium text-gray-600">คำค้นหา</label>
+                  <div className="mx-auto max-w-md">
+                    <div className="relative flex items-center rounded-xl border border-gray-200 bg-sky-50/40 focus-within:border-sky-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-sky-100">
+                      <Search className="ml-3 h-4 w-4 shrink-0 text-sky-500/80" />
+                      <input
+                        type="text"
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        placeholder="ชื่อ, เขต, คำอธิบาย..."
+                        className="w-full min-w-0 bg-transparent py-2 pl-2 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+                      />
+                    </div>
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                   <button
                     type="submit"
-                    className="w-full rounded-full bg-gradient-to-r from-nong-deep to-nong-purple py-3.5 text-center text-sm font-semibold text-white shadow-lg transition hover:opacity-95 sm:flex-1"
+                    className="w-full rounded-full bg-gradient-to-r from-sky-600 to-blue-600 py-3 text-center text-sm font-semibold text-white shadow-md shadow-sky-200 transition hover:opacity-95 sm:flex-1"
                   >
                     ค้นหา
                   </button>
@@ -331,7 +333,7 @@ export default function HomePage() {
                     className={cn(
                       'inline-flex w-full items-center justify-center gap-2 rounded-full border py-3.5 text-sm font-semibold transition sm:w-auto sm:px-6',
                       showFilterPanel || hasActiveFilters
-                        ? 'border-nong-purple/40 bg-violet-50 text-nong-purple'
+                        ? 'border-sky-300 bg-sky-50 text-sky-800'
                         : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
                     )}
                   >
@@ -355,11 +357,11 @@ export default function HomePage() {
                         className={cn(
                           'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition sm:text-sm',
                           filterProvince === location
-                            ? 'border-nong-purple/50 bg-violet-100 text-nong-purple'
-                            : 'border-rose-100 bg-rose-50/90 text-gray-700 hover:border-rose-200'
+                            ? 'border-sky-400 bg-sky-100 text-sky-900'
+                            : 'border-sky-100 bg-sky-50/90 text-gray-700 hover:border-sky-200'
                         )}
                       >
-                        <MapPin className="h-3.5 w-3.5 text-nong-purple" />
+                        <MapPin className="h-3.5 w-3.5 text-sky-600" />
                         {location}
                       </button>
                     ))}
@@ -371,7 +373,7 @@ export default function HomePage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="rounded-xl border-0 bg-transparent text-sm font-semibold text-nong-purple focus:ring-0"
+                    className="rounded-xl border-0 bg-transparent text-sm font-semibold text-sky-700 focus:ring-0"
                   >
                     {SORT_OPTIONS.map((opt) => (
                       <option key={opt.value} value={opt.value}>
@@ -388,9 +390,9 @@ export default function HomePage() {
 
       {/* Filter Panel */}
       {showFilterPanel && (
-        <div className="animate-fade-in border-b border-violet-100/80 bg-gradient-to-b from-violet-50/50 to-background">
+        <div className="animate-fade-in border-b border-sky-100/80 bg-gradient-to-b from-sky-50/40 to-background">
           <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
-            <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xl shadow-nong-purple/5 sm:p-8">
+            <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-xl shadow-sky-100/50 sm:p-8">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-gray-900">ตัวกรอง</h3>
               <button
@@ -529,14 +531,14 @@ export default function HomePage() {
 
       {/* Results Count */}
       {hasActiveFilters && (
-        <div className="border-b border-violet-100/60 bg-violet-50/40">
+        <div className="border-b border-sky-100/60 bg-sky-50/30">
           <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">พบ {profilesInWindow.length} คน</span>
               <button
                 type="button"
                 onClick={clearFilters}
-                className="text-sm font-medium text-nong-purple hover:text-nong-magenta"
+                className="text-sm font-medium text-sky-700 hover:text-blue-700"
               >
                 ล้างตัวกรอง
               </button>
@@ -588,7 +590,7 @@ export default function HomePage() {
             title="TOP STAR ⭐"
             profiles={modelProfiles}
             accent="bg-slate-50/90"
-            stripeClass="from-nong-purple to-nong-magenta"
+            stripeClass="from-sky-500 to-blue-600"
           />
 
           <ProfileSection
@@ -602,7 +604,7 @@ export default function HomePage() {
 
       {/* CTA Section */}
       {!hasActiveFilters && !loading && (
-        <section className="bg-gradient-to-br from-nong-purple via-secondary-700 to-nong-magenta py-20 text-white">
+        <section className="bg-gradient-to-br from-sky-600 via-blue-600 to-blue-800 py-20 text-white">
           <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">พร้อมเริ่มต้นหรือยัง?</h2>
             <p className="mt-4 text-lg text-white/90 sm:text-xl">
@@ -610,7 +612,7 @@ export default function HomePage() {
             </p>
             <Link
               href="/register"
-              className="mt-10 inline-flex rounded-full bg-white px-10 py-3.5 text-sm font-semibold text-nong-purple shadow-lg transition hover:bg-violet-50"
+              className="mt-10 inline-flex rounded-full bg-white px-10 py-3.5 text-sm font-semibold text-sky-700 shadow-lg transition hover:bg-sky-50"
             >
               สมัครสมาชิกฟรี
             </Link>
@@ -623,7 +625,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="mb-4 flex items-center justify-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-nong-purple to-nong-magenta">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-blue-600">
                 <span className="text-xl font-bold text-white">F</span>
               </div>
               <span className="text-2xl font-bold tracking-tight">FF2</span>

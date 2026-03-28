@@ -9,11 +9,11 @@ export const metadata = {
 
 export default function HowToUsePage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
       <PublicHeader />
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-primary-500 to-secondary-500 text-white py-16">
+      {/* Hero — โทนขาวฟ้าเดียวกับหน้าแรก */}
+      <section className="bg-gradient-to-br from-sky-500 via-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-bold mb-4">วิธีการใช้งาน</h1>
           <p className="text-xl opacity-90">
@@ -27,18 +27,18 @@ export default function HowToUsePage() {
         <div className="space-y-8">
           {/* Step 1 */}
           <div className="bg-white rounded-xl p-6 shadow-md flex items-start gap-6">
-            <div className="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl font-bold text-primary-500">1</span>
+            <div className="w-14 h-14 bg-sky-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl font-bold text-sky-600">1</span>
             </div>
             <div>
               <h2 className="text-xl font-bold mb-2">สมัครสมาชิก</h2>
               <p className="text-gray-600 mb-3">
                 ลงทะเบียนบัญชีฟรีด้วยอีเมล สามารถสร้างได้สูงสุด 50 โปรไฟล์ต่อ 1 อีเมล
               </p>
-              <Link
-                href="/register"
-                className="inline-block bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
-              >
+          <Link
+            href="/register"
+            className="inline-block bg-white text-sky-700 px-4 py-2 rounded-lg font-semibold shadow-sm hover:bg-sky-50 transition-colors"
+          >
                 สมัครสมาชิกฟรี
               </Link>
             </div>
@@ -46,8 +46,8 @@ export default function HowToUsePage() {
 
           {/* Step 2 */}
           <div className="bg-white rounded-xl p-6 shadow-md flex items-start gap-6">
-            <div className="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl font-bold text-primary-500">2</span>
+            <div className="w-14 h-14 bg-sky-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl font-bold text-sky-600">2</span>
             </div>
             <div>
               <h2 className="text-xl font-bold mb-2">สร้างโปรไฟล์</h2>
@@ -62,8 +62,8 @@ export default function HowToUsePage() {
 
           {/* Step 3 */}
           <div className="bg-white rounded-xl p-6 shadow-md flex items-start gap-6">
-            <div className="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl font-bold text-primary-500">3</span>
+            <div className="w-14 h-14 bg-sky-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl font-bold text-sky-600">3</span>
             </div>
             <div>
               <h2 className="text-xl font-bold mb-2">สร้างโพสต์รูป</h2>
@@ -78,8 +78,8 @@ export default function HowToUsePage() {
 
           {/* Step 4 */}
           <div className="bg-white rounded-xl p-6 shadow-md flex items-start gap-6">
-            <div className="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl font-bold text-primary-500">4</span>
+            <div className="w-14 h-14 bg-sky-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl font-bold text-sky-600">4</span>
             </div>
             <div>
               <h2 className="text-xl font-bold mb-2">เลือกระดับสมาชิก</h2>
@@ -96,8 +96,8 @@ export default function HowToUsePage() {
 
           {/* Step 5 */}
           <div className="bg-white rounded-xl p-6 shadow-md flex items-start gap-6">
-            <div className="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl font-bold text-primary-500">5</span>
+            <div className="w-14 h-14 bg-sky-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl font-bold text-sky-600">5</span>
             </div>
             <div>
               <h2 className="text-xl font-bold mb-2">เติมเงิน / ซื้อแพ็คเกจ</h2>
@@ -139,7 +139,7 @@ export default function HowToUsePage() {
           <p className="text-gray-600 mb-4">พร้อมเริ่มต้นใช้งานแล้วหรือยัง?</p>
           <Link
             href="/register"
-            className="inline-block bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-all"
+            className="inline-block bg-gradient-to-r from-sky-500 to-blue-600 text-white px-8 py-3 rounded-full font-semibold shadow-md hover:shadow-lg transition-all"
           >
             สมัครสมาชิกฟรี
           </Link>

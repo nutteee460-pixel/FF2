@@ -7,7 +7,14 @@ import { cn } from '@/lib/utils';
 
 type HeaderVariant = 'default' | 'hero';
 
-export default function PublicHeader({ variant = 'default' }: { variant?: HeaderVariant }) {
+export default function PublicHeader({
+  variant = 'default',
+  /** hero แบบพื้นหลังสว่าง (ขาว/ฟ้าอ่อน) — ใช้ตัวอักษรสีเข้มแทนสีขาวบน gradient เดิม */
+  heroLight = false,
+}: {
+  variant?: HeaderVariant;
+  heroLight?: boolean;
+}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [solidNav, setSolidNav] = useState(false);
@@ -21,7 +28,7 @@ export default function PublicHeader({ variant = 'default' }: { variant?: Header
   }, [variant]);
 
   const onHero = variant === 'hero';
-  const lightOnGradient = onHero && !solidNav;
+  const lightOnGradient = onHero && !solidNav && !heroLight;
 
   return (
     <header
@@ -29,7 +36,9 @@ export default function PublicHeader({ variant = 'default' }: { variant?: Header
         'sticky top-0 z-50 transition-colors duration-300',
         lightOnGradient
           ? 'border-b border-white/15 bg-transparent'
-          : 'border-b border-gray-100/80 bg-white/95 shadow-sm backdrop-blur-md'
+          : heroLight && onHero && !solidNav
+            ? 'border-b border-sky-100/80 bg-white/80 shadow-sm backdrop-blur-md'
+            : 'border-b border-gray-100/80 bg-white/95 shadow-sm backdrop-blur-md'
       )}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

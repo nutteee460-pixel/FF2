@@ -5,9 +5,9 @@
 @tailwind utilities;
 
 :root {
-  --primary: #E91E63;
-  --secondary: #9C27B0;
-  --accent: #FF5722;
+  --primary: #0ea5e9;
+  --secondary: #2563eb;
+  --accent: #0284c7;
 }
 
 body {
@@ -26,12 +26,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E91E63;
+  background: #0ea5e9;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #c71b52;
+  background: #0284c7;
 }
 
 /* Animations */
@@ -81,7 +81,7 @@ body {
 
 .card-hover:hover {
   transform: scale(1.02);
-  box-shadow: 0 10px 40px rgba(233, 30, 99, 0.15);
+  box-shadow: 0 10px 40px rgba(14, 165, 233, 0.12);
 }
 
 /* Telegram widget pulse */
