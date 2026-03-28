@@ -185,6 +185,10 @@ export default function RegisterPage() {
             </div>
           </div>
 
+          <p className="text-xs text-gray-500 -mt-1">
+            รหัสผ่าน 8 ตัวขึ้นไป และต้องมีอย่างน้อย 3 ใน 4 แบบ: ตัวพิมพ์ใหญ่ ตัวพิมพ์เล็ก ตัวเลข อักขระพิเศษ
+          </p>
+
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { setSession } from '@/lib/session';
-import { registerSchema } from '@/lib/schemas';
+import { registerApiSchema } from '@/lib/schemas';
 
 export async function POST(request: Request) {
   try {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // Validate input with Zod schema
-    const validationResult = registerSchema.safeParse(body);
+    const validationResult = registerApiSchema.safeParse(body);
     if (!validationResult.success) {
       return NextResponse.json(
         { message: validationResult.error.errors[0]?.message || 'ข้อมูลไม่ถูกต้อง' },
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     }
 
     const validated = validationResult.data;
-    const { email, password, accountType, acceptTerms } = validated;
+    const { email, password, accountType } = validated;
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({

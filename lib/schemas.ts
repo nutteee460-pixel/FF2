@@ -1,31 +1,57 @@
 import { z } from 'zod';
 
-export const registerSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'กรุณากรอกอีเมล')
-    .email('รูปแบบอีเมลไม่ถูกต้อง')
-    .max(255, 'อีเมลต้องไม่เกิน 255 ตัวอักษร')
-    .transform((v) => v.toLowerCase().trim()),
-  password: z
-    .string()
-    .min(8, 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร')
-    .max(128, 'รหัสผ่านต้องไม่เกิน 128 ตัวอักษร')
-    .refine(
-      (password) => {
-        const hasUpperCase = /[A-Z]/.test(password);
-        const hasLowerCase = /[a-z]/.test(password);
-        const hasNumber = /[0-9]/.test(password);
-        const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-        return [hasUpperCase, hasLowerCase, hasNumber, hasSpecialChar].filter(Boolean).length >= 3;
-      },
-      { message: 'รหัสผ่านต้องมีตัวพิมพ์ใหญ่ ตัวพิมพ์เล็ก ตัวเลข และอักขระพิเศษอย่างน้อย 3 ประเภท' }
-    ),
-  confirmPassword: z.string().min(1, 'กรุณายืนยันรหัสผ่าน'),
-  accountType: z.enum(['POSTER', 'BUYER']).optional(),
-  acceptTerms: z.boolean().refine((val) => val === true, {
+/** ใช้ใน POST /api/auth/register — ไม่รับ confirmPassword (ตรวจแค่ฝั่งฟอร์ม) เพื่อไม่ให้ cache JS เก่าทำให้ Zod คืนข้อความ "Required" */
+const registerEmailSchema = z
+  .string({
+    required_error: 'กรุณากรอกอีเมล',
+    invalid_type_error: 'กรุณากรอกอีเมล',
+  })
+  .min(1, 'กรุณากรอกอีเมล')
+  .email('รูปแบบอีเมลไม่ถูกต้อง')
+  .max(255, 'อีเมลต้องไม่เกิน 255 ตัวอักษร')
+  .transform((v) => v.toLowerCase().trim());
+
+const registerPasswordSchema = z
+  .string({
+    required_error: 'กรุณากรอกรหัสผ่าน',
+    invalid_type_error: 'กรุณากรอกรหัสผ่าน',
+  })
+  .min(8, 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร')
+  .max(128, 'รหัสผ่านต้องไม่เกิน 128 ตัวอักษร')
+  .refine(
+    (password) => {
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+      return [hasUpperCase, hasLowerCase, hasNumber, hasSpecialChar].filter(Boolean).length >= 3;
+    },
+    { message: 'รหัสผ่านต้องมีตัวพิมพ์ใหญ่ ตัวพิมพ์เล็ก ตัวเลข และอักขระพิเศษอย่างน้อย 3 ประเภท' }
+  );
+
+const registerAcceptTermsSchema = z
+  .boolean({
+    required_error: 'กรุณายอมรับข้อกำหนดของเว็บไซต์',
+    invalid_type_error: 'กรุณายอมรับข้อกำหนดของเว็บไซต์',
+  })
+  .refine((val) => val === true, {
     message: 'กรุณายอมรับข้อกำหนดของเว็บไซต์',
-  }),
+  });
+
+export const registerApiSchema = z.object({
+  email: registerEmailSchema,
+  password: registerPasswordSchema,
+  accountType: z.enum(['POSTER', 'BUYER']).optional(),
+  acceptTerms: registerAcceptTermsSchema,
+});
+
+export const registerSchema = registerApiSchema.extend({
+  confirmPassword: z
+    .string({
+      required_error: 'กรุณายืนยันรหัสผ่าน',
+      invalid_type_error: 'กรุณายืนยันรหัสผ่าน',
+    })
+    .min(1, 'กรุณายืนยันรหัสผ่าน'),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'รหัสผ่านไม่ตรงกัน',
   path: ['confirmPassword'],
