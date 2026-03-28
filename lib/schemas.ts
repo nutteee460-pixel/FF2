@@ -66,6 +66,7 @@ export const profileCreateSchema = z.object({
 });
 
 export const postSchema = z.object({
+  profileId: z.string().min(1, 'กรุณาเลือกโปรไฟล์'),
   title: z.string().min(1, 'กรุณากรอกหัวข้อ').max(200),
   description: z.string().max(2000).optional(),
   lineId: z.string().min(1, 'กรุณากรอก LINE ID').max(100),
