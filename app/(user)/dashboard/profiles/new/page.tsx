@@ -3,9 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Upload, X, Image as ImageIcon, Loader, Camera, User, Sparkles } from 'lucide-react';
+import { Upload, X, Loader } from 'lucide-react';
 import { THAI_PROVINCES } from '@/lib/utils';
-import { SERVICE_TYPES, APPEARANCES, AGE_RANGES } from '@/lib/categories';
 
 interface Profile {
   id: string;
@@ -28,11 +27,6 @@ export default function NewProfilePage() {
     description: '',
   });
   const [images, setImages] = useState<string[]>([]);
-  
-  // หมวดหมู่ใหม่
-  const [selectedServiceTypes, setSelectedServiceTypes] = useState<string[]>([]);
-  const [selectedAppearances, setSelectedAppearances] = useState<string[]>([]);
-  const [selectedAgeRanges, setSelectedAgeRanges] = useState<string[]>([]);
 
   useEffect(() => {
     const checkAccount = async () => {
@@ -99,24 +93,6 @@ export default function NewProfilePage() {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  const toggleServiceType = (value: string) => {
-    setSelectedServiceTypes(prev => 
-      prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
-    );
-  };
-
-  const toggleAppearance = (value: string) => {
-    setSelectedAppearances(prev =>
-      prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
-    );
-  };
-
-  const toggleAgeRange = (value: string) => {
-    setSelectedAgeRanges(prev =>
-      prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
-    );
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -147,9 +123,6 @@ export default function NewProfilePage() {
         body: JSON.stringify({
           ...formData,
           images,
-          serviceTypes: selectedServiceTypes,
-          appearance: selectedAppearances,
-          ageRange: selectedAgeRanges,
         }),
       });
 
@@ -170,7 +143,7 @@ export default function NewProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="flex justify-center py-24">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"></div>
       </div>
     );
@@ -178,37 +151,18 @@ export default function NewProfilePage() {
 
   if (buyerBlocked) {
     return (
-      <div className="min-h-screen bg-gray-100">
-        <header className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <Link href="/dashboard" className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">F</span>
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
-                  FF2
-                </span>
-              </Link>
-              <Link href="/dashboard" className="text-gray-600 hover:text-primary-500">
-                กลับ
-              </Link>
-            </div>
-          </div>
-        </header>
-        <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-          <div className="bg-white rounded-xl shadow-md p-12">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">บัญชีผู้ใช้งาน</h2>
-            <p className="text-gray-500 mb-6">
-              ประเภทนี้สำหรับผู้ที่มาซื้อ/ดูงาน ไม่ต้องสร้างโปรไฟล์ หากต้องการลงขายโปรดสมัครใหม่ด้วยประเภท &quot;Post งาน&quot;
-            </p>
-            <Link
-              href="/dashboard"
-              className="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600"
-            >
-              กลับแดชบอร์ด
-            </Link>
-          </div>
+      <div className="max-w-2xl mx-auto text-center">
+        <div className="bg-white rounded-xl shadow-md p-12">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">บัญชีผู้ใช้งาน</h2>
+          <p className="text-gray-500 mb-6">
+            ประเภทนี้สำหรับผู้ที่มาซื้อ/ดูงาน ไม่ต้องสร้างโปรไฟล์ หากต้องการลงขายโปรดสมัครใหม่ด้วยประเภท &quot;Post งาน&quot;
+          </p>
+          <Link
+            href="/dashboard"
+            className="inline-block bg-primary-500 text-white px-6 py-3 rounded-lg hover:bg-primary-600"
+          >
+            กลับแดชบอร์ด
+          </Link>
         </div>
       </div>
     );
@@ -216,59 +170,20 @@ export default function NewProfilePage() {
 
   if (profiles.length >= 50) {
     return (
-      <div className="min-h-screen bg-gray-100">
-        <header className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <Link href="/dashboard" className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">F</span>
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
-                  FF2
-                </span>
-              </Link>
-              <Link href="/dashboard/profiles" className="text-gray-600 hover:text-primary-500">
-                กลับ
-              </Link>
-            </div>
+      <div className="max-w-2xl mx-auto text-center">
+        <div className="bg-white rounded-xl shadow-md p-12">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <X className="w-8 h-8 text-red-500" />
           </div>
-        </header>
-        <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-          <div className="bg-white rounded-xl shadow-md p-12">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <X className="w-8 h-8 text-red-500" />
-            </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">ถึงขีดจำกัดแล้ว</h2>
-            <p className="text-gray-500">คุณสร้างโปรไฟล์ได้สูงสุด 50 โปรไฟล์ต่อ 1 บัญชี</p>
-          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">ถึงขีดจำกัดแล้ว</h2>
+          <p className="text-gray-500">คุณสร้างโปรไฟล์ได้สูงสุด 50 โปรไฟล์ต่อ 1 บัญชี</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/dashboard" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xl">F</span>
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
-                FF2
-              </span>
-            </Link>
-            <Link href="/dashboard/profiles" className="text-gray-600 hover:text-primary-500">
-              กลับ
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="max-w-2xl mx-auto">
         <div className="bg-white rounded-xl shadow-md p-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">สร้างโปรไฟล์ใหม่</h1>
 
@@ -393,78 +308,6 @@ export default function NewProfilePage() {
               />
             </div>
 
-            {/* หมวดหมู่: ประเภทบริการ */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Camera className="w-4 h-4 inline mr-1" />
-                ประเภทบริการ (เลือกได้หลายอย่าง)
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {SERVICE_TYPES.map((type) => (
-                  <button
-                    key={type.value}
-                    type="button"
-                    onClick={() => toggleServiceType(type.value)}
-                    className={`px-3 py-1.5 rounded-full text-sm transition-all ${
-                      selectedServiceTypes.includes(type.value)
-                        ? 'bg-primary-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {type.icon} {type.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* หมวดหมู่: ลักษณะทั่วไป */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <User className="w-4 h-4 inline mr-1" />
-                ลักษณะทั่วไป (เลือกได้หลายอย่าง)
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {APPEARANCES.map((app) => (
-                  <button
-                    key={app.value}
-                    type="button"
-                    onClick={() => toggleAppearance(app.value)}
-                    className={`px-3 py-1.5 rounded-full text-sm transition-all ${
-                      selectedAppearances.includes(app.value)
-                        ? 'bg-secondary-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {app.icon} {app.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* หมวดหมู่: ช่วงอายุ */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                <Sparkles className="w-4 h-4 inline mr-1" />
-                ช่วงอายุที่ต้องการ (เลือกได้หลายอย่าง)
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {AGE_RANGES.map((age) => (
-                  <button
-                    key={age.value}
-                    type="button"
-                    onClick={() => toggleAgeRange(age.value)}
-                    className={`px-3 py-1.5 rounded-full text-sm transition-all ${
-                      selectedAgeRanges.includes(age.value)
-                        ? 'bg-purple-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {age.icon} {age.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Submit */}
             <div className="flex space-x-4">
               <Link
@@ -490,7 +333,6 @@ export default function NewProfilePage() {
             </div>
           </form>
         </div>
-      </div>
     </div>
   );
 }

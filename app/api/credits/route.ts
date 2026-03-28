@@ -2,7 +2,14 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import { extractSessionFromCookie } from '@/lib/session';
-import { creditTopupSchema } from '@/lib/schemas';
+import { creditCreateSchema } from '@/lib/schemas';
+
+function remainingGeneralDays(freeExpiry: Date | null | undefined, now: Date): number {
+  if (!freeExpiry) return 0;
+  const exp = new Date(freeExpiry);
+  if (exp <= now) return 0;
+  return Math.ceil((exp.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+}
 
 // In-memory rate limiting for credits
 const creditAttempts = new Map<string, { count: number; resetAt: number }>();
@@ -112,8 +119,17 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    // Validate input with Zod schema
-    const validationResult = creditTopupSchema.safeParse(body);
+    const requestType =
+      body.type === 'PURCHASE_SUPER' || body.type === 'PURCHASE_MODEL' ? body.type : 'TOPUP';
+    const amountNum =
+      typeof body.amount === 'number' ? body.amount : parseInt(String(body.amount), 10);
+
+    const validationResult = creditCreateSchema.safeParse({
+      type: requestType,
+      amount: amountNum,
+      profileId: body.profileId,
+      proof: body.proof,
+    });
     if (!validationResult.success) {
       return NextResponse.json(
         { message: validationResult.error.errors[0]?.message || 'ข้อมูลไม่ถูกต้อง' },
@@ -121,7 +137,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { amount, profileId } = validationResult.data;
+    const { type, amount, profileId } = validationResult.data;
 
     // Verify profile belongs to user and is approved (has expiry date)
     const profile = await prisma.profile.findFirst({
@@ -149,6 +165,22 @@ export async function POST(request: Request) {
       );
     }
 
+    if (type === 'PURCHASE_SUPER' || type === 'PURCHASE_MODEL') {
+      const freeRem = remainingGeneralDays(profile.freeExpiry, currentTime);
+      if (freeRem < 1) {
+        return NextResponse.json(
+          { message: 'Super/Model ต้องมีวันใช้งานทั่วไปก่อน' },
+          { status: 400 }
+        );
+      }
+      if (freeRem < amount) {
+        return NextResponse.json(
+          { message: 'วัน Super/Model ต้องไม่เกินวันใช้งานทั่วไปที่เหลือ' },
+          { status: 400 }
+        );
+      }
+    }
+
     // Validate proof (base64 image data URL)
     const proofStr = typeof body.proof === 'string' ? body.proof.trim() : '';
     if (!proofStr || !proofStr.startsWith('data:image/')) {
@@ -172,7 +204,7 @@ export async function POST(request: Request) {
         userId,
         profileId,
         amount,
-        type: 'TOPUP',
+        type,
         proof: proofStr,
         status: 'PENDING',
       },

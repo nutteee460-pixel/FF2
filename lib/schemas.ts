@@ -131,6 +131,25 @@ export const creditTopupSchema = z.object({
   proof: z.string().min(1, 'กรุณาอัพโหลดสลิป'),
 });
 
+/** POST /api/credits — รองรับ TOPUP + ซื้อ Super/Model (7/14 วัน) */
+export const creditCreateSchema = z
+  .object({
+    type: z.enum(['TOPUP', 'PURCHASE_SUPER', 'PURCHASE_MODEL']),
+    amount: z.number().int().min(1, 'กรุณากรอกจำนวนวัน').max(3650),
+    profileId: z.string().min(1, 'กรุณาเลือกโปรไฟล์'),
+    proof: z.string().min(1, 'กรุณาอัพโหลดสลิป'),
+  })
+  .superRefine((data, ctx) => {
+    if (data.type === 'TOPUP') return;
+    if (data.amount !== 7 && data.amount !== 14) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'แพ็คเกจ Super/Model เลือกได้เฉพาะ 7 หรือ 14 วัน',
+        path: ['amount'],
+      });
+    }
+  });
+
 export const settingsSchema = z.object({
   bankName: z.string().max(100).optional(),
   bankAccount: z.string().max(200).optional(),
@@ -146,4 +165,5 @@ export type PostInput = z.infer<typeof postSchema>;
 export type PostUpdateInput = z.infer<typeof postUpdateSchema>;
 export type TransferInput = z.infer<typeof transferSchema>;
 export type CreditTopupInput = z.infer<typeof creditTopupSchema>;
+export type CreditCreateInput = z.infer<typeof creditCreateSchema>;
 export type SettingsInput = z.infer<typeof settingsSchema>;

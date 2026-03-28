@@ -54,7 +54,7 @@ export default function PostsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="flex justify-center py-24">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent"></div>
       </div>
     );
@@ -62,59 +62,19 @@ export default function PostsPage() {
 
   if (buyerBlocked) {
     return (
-      <div className="min-h-screen bg-gray-100">
-        <header className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <Link href="/dashboard" className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">F</span>
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
-                  FF2
-                </span>
-              </Link>
-              <Link href="/dashboard" className="text-gray-600 hover:text-primary-500">
-                กลับสู่แดชบอร์ด
-              </Link>
-            </div>
-          </div>
-        </header>
-        <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-          <div className="bg-white rounded-xl shadow-md p-12">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">บัญชีผู้ใช้งาน</h2>
-            <p className="text-gray-500">ไม่มีหน้ารายการโพสต์สำหรับประเภทนี้</p>
-          </div>
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-xl shadow-md p-12 text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">บัญชีผู้ใช้งาน</h2>
+          <p className="text-gray-500">ไม่มีหน้ารายการโพสต์สำหรับประเภทนี้</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/dashboard" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xl">F</span>
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent">
-                FF2
-              </span>
-            </Link>
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-gray-600 hover:text-primary-500">
-                กลับสู่แดชบอร์ด
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">โพสต์ของฉัน</h1>
+          <h1 className="text-2xl font-bold text-gray-900">จัดการโพสต์</h1>
           <Link
             href="/dashboard/posts/new"
             className="flex items-center space-x-2 bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
@@ -180,7 +140,6 @@ export default function PostsPage() {
             })}
           </div>
         )}
-      </div>
     </div>
   );
 }

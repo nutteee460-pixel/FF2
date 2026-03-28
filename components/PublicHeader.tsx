@@ -109,13 +109,22 @@ export default function PublicHeader({
                   โปรไฟล์
                 </Link>
                 <Link
-                  href="/dashboard/credits"
+                  href="/dashboard/topup"
                   className={cn(
                     'text-sm font-medium transition-colors',
                     lightOnGradient ? 'text-white/95 hover:text-white' : 'text-gray-700 hover:text-nong-purple'
                   )}
                 >
-                  เครดิต
+                  เติมเงิน
+                </Link>
+                <Link
+                  href="/dashboard/shop"
+                  className={cn(
+                    'text-sm font-medium transition-colors',
+                    lightOnGradient ? 'text-white/95 hover:text-white' : 'text-gray-700 hover:text-nong-purple'
+                  )}
+                >
+                  ร้านค้า
                 </Link>
                 <button
                   type="button"
@@ -200,8 +209,11 @@ export default function PublicHeader({
                   <Link href="/dashboard/profiles" className="px-2 font-medium text-gray-800" onClick={() => setIsMenuOpen(false)}>
                     โปรไฟล์
                   </Link>
-                  <Link href="/dashboard/credits" className="px-2 font-medium text-gray-800" onClick={() => setIsMenuOpen(false)}>
-                    เครดิต
+                  <Link href="/dashboard/topup" className="px-2 font-medium text-gray-800" onClick={() => setIsMenuOpen(false)}>
+                    เติมเงิน
+                  </Link>
+                  <Link href="/dashboard/shop" className="px-2 font-medium text-gray-800" onClick={() => setIsMenuOpen(false)}>
+                    ร้านค้า
                   </Link>
                 </>
               ) : (
