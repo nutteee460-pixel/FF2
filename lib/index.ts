@@ -2,7 +2,6 @@ export { cn, THAI_PROVINCES, formatDate, getDaysRemaining, getProfileDisplayTier
 export {
   registerSchema,
   loginSchema,
-  profileSchema,
   postSchema,
   transferSchema,
   creditTopupSchema,
@@ -14,7 +13,6 @@ export {
 export type {
   RegisterInput,
   LoginInput,
-  ProfileInput,
   PostInput,
   TransferInput,
   CreditTopupInput,
