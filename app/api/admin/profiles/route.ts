@@ -1,44 +1,49 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { extractSessionFromCookie } from '@/lib/session';
 
-// Use the same admin_session cookie as admin-login
-function adminGuard() {
-  const sessionCookie = cookies().get('admin_session');
-  if (!sessionCookie) return null;
-
-  try {
-    const sessionData = JSON.parse(Buffer.from(sessionCookie.value, 'base64').toString());
-    if (sessionData.role !== 'ADMIN') return null;
-    return sessionData;
-  } catch {
-    return null;
-  }
+async function adminGuard() {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get('ff2_admin_session');
+  if (!sessionCookie?.value) return null;
+  const sessionData = extractSessionFromCookie(sessionCookie.value);
+  if (!sessionData || sessionData.role !== 'ADMIN') return null;
+  return sessionData;
 }
 
 export async function GET(request: Request) {
-  const session = adminGuard();
+  const session = await adminGuard();
   if (!session) {
     return NextResponse.json({ message: 'คุณไม่มีสิทธิ์เข้าถึง' }, { status: 403 });
   }
 
   const { searchParams } = new URL(request.url);
-  const q = searchParams.get('q') || '';
+  const q = (searchParams.get('q') || '').trim();
 
   try {
-    // ค้นหาโปรไฟล์ตามชื่อโพสต์ หรือชื่อโปรไฟล์
+    // ค้นหาตามชื่อโพสต์ (title) หรือชื่อโปรไฟล์ — ใช้หลังบ้านจัดการโพสต์
     const posts = await prisma.post.findMany({
       where: q
         ? {
             OR: [
-              { title: { contains: q } },
-              { profile: { name: { contains: q } } },
+              { title: { contains: q, mode: 'insensitive' } },
+              { profile: { name: { contains: q, mode: 'insensitive' } } },
             ],
           }
         : {},
       include: {
         profile: {
-          include: {
+          select: {
+            id: true,
+            name: true,
+            age: true,
+            province: true,
+            freeExpiry: true,
+            superExpiry: true,
+            modelExpiry: true,
+            tier: true,
+            status: true,
             user: {
               select: {
                 id: true,
@@ -50,19 +55,19 @@ export async function GET(request: Request) {
           },
         },
       },
-      take: 50,
+      take: 200,
       orderBy: { createdAt: 'desc' },
     });
 
     return NextResponse.json({ posts });
   } catch (error) {
-    console.error('Search profiles error:', error);
+    console.error('Admin posts search error:', error);
     return NextResponse.json({ message: 'เกิดข้อผิดพลาด' }, { status: 500 });
   }
 }
 
 export async function PUT(request: Request) {
-  const session = adminGuard();
+  const session = await adminGuard();
   if (!session) {
     return NextResponse.json({ message: 'คุณไม่มีสิทธิ์เข้าถึง' }, { status: 403 });
   }
@@ -75,18 +80,15 @@ export async function PUT(request: Request) {
       return NextResponse.json({ message: 'ข้อมูลไม่ครบ' }, { status: 400 });
     }
 
-    // Validate days as integer
     const dayNum = Number.isInteger(days) ? days : parseInt(String(days), 10);
     if (!Number.isFinite(dayNum) || dayNum < 1 || dayNum > 3650) {
       return NextResponse.json({ message: 'จำนวนวันต้องอยู่ระหว่าง 1–3650' }, { status: 400 });
     }
 
-    // Validate action
     if (!['ADD', 'REMOVE', 'SET'].includes(action)) {
       return NextResponse.json({ message: 'action ไม่ถูกต้อง' }, { status: 400 });
     }
 
-    // Validate kind
     if (!['FREE', 'SUPER', 'MODEL'].includes(kind)) {
       return NextResponse.json({ message: 'kind ไม่ถูกต้อง' }, { status: 400 });
     }
@@ -127,7 +129,8 @@ export async function PUT(request: Request) {
       select: { id: true, freeExpiry: true, superExpiry: true, modelExpiry: true },
     });
 
-    const msg = action === 'ADD' ? 'เพิ่มวันสำเร็จ' : action === 'REMOVE' ? 'ลดวันสำเร็จ' : 'ตั้งค่าวันสำเร็จ';
+    const msg =
+      action === 'ADD' ? 'เพิ่มวันสำเร็จ' : action === 'REMOVE' ? 'ลดวันสำเร็จ' : 'ตั้งค่าวันสำเร็จ';
 
     return NextResponse.json({
       message: msg,

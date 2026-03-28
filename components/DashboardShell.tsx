@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard,
   User,
-  Image,
   Wallet,
   Store,
   Settings,
@@ -119,18 +118,6 @@ export default function DashboardShell({ children }: { children: React.ReactNode
                   >
                     <User className="w-5 h-5 shrink-0" />
                     <span>โปรไฟล์ ({user.profileCount}/50)</span>
-                  </Link>
-                  <Link
-                    href="/dashboard/posts"
-                    className={cn(
-                      'flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors',
-                      navActive('/dashboard/posts')
-                        ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white'
-                        : 'text-gray-600 hover:bg-gray-50'
-                    )}
-                  >
-                    <Image className="w-5 h-5 shrink-0" />
-                    <span>จัดการโพสต์</span>
                   </Link>
                 </>
               ) : (

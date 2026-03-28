@@ -12,11 +12,27 @@ interface CreditRequest {
   status: string;
   proof: string | null;
   createdAt: string;
+  profile?: { id: string; name: string } | null;
   user: {
     id: string;
     email: string;
     name: string;
   };
+}
+
+function creditTypeTh(t: string) {
+  switch (t) {
+    case 'TOPUP':
+      return 'เติมวันใช้งานทั่วไป';
+    case 'PURCHASE_SUPER':
+      return 'ซื้อ Super';
+    case 'PURCHASE_MODEL':
+      return 'ซื้อ Model';
+    case 'VERIFY_IDENTITY':
+      return 'ยืนยันตัวตน';
+    default:
+      return t;
+  }
 }
 
 export default function AdminCreditsPage() {
@@ -115,8 +131,11 @@ export default function AdminCreditsPage() {
                       </div>
                       <div>
                         <p className="font-semibold text-gray-900">
-                          {request.amount} วัน - {request.type}
+                          {request.amount} วัน · {creditTypeTh(request.type)}
                         </p>
+                        {request.profile?.name && (
+                          <p className="text-sm text-gray-600">โปรไฟล์: {request.profile.name}</p>
+                        )}
                         <p className="text-sm text-gray-500 flex items-center gap-1">
                           <User className="w-4 h-4" />
                           {request.user?.email}

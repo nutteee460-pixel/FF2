@@ -120,7 +120,13 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     const requestType =
-      body.type === 'PURCHASE_SUPER' || body.type === 'PURCHASE_MODEL' ? body.type : 'TOPUP';
+      body.type === 'PURCHASE_SUPER'
+        ? 'PURCHASE_SUPER'
+        : body.type === 'PURCHASE_MODEL'
+          ? 'PURCHASE_MODEL'
+          : body.type === 'VERIFY_IDENTITY'
+            ? 'VERIFY_IDENTITY'
+            : 'TOPUP';
     const amountNum =
       typeof body.amount === 'number' ? body.amount : parseInt(String(body.amount), 10);
 
@@ -151,14 +157,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'ไม่พบโปรไฟล์ที่เลือก' }, { status: 404 });
     }
 
-    // Check if profile has any active expiry (meaning it was approved and has days)
     const currentTime = new Date();
     const hasActiveDays =
       (profile.freeExpiry && new Date(profile.freeExpiry) > currentTime) ||
       (profile.superExpiry && new Date(profile.superExpiry) > currentTime) ||
       (profile.modelExpiry && new Date(profile.modelExpiry) > currentTime);
 
-    if (!hasActiveDays) {
+    // คำขอยืนยันตัวตนอนุญาตแม้ยังไม่มีวันคงเหลือ (โปรไฟล์รอตรวจได้ส่งสลิปได้)
+    if (type !== 'VERIFY_IDENTITY' && !hasActiveDays) {
       return NextResponse.json(
         { message: 'โปรไฟล์นี้ยังไม่มีวันใช้งาน กรุณาสร้างโพสต์และรอการอนุมัติก่อน' },
         { status: 400 }
@@ -210,10 +216,12 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json(
-      { message: 'ส่งคำขอเติมเงินสำเร็จ รอการตรวจสอบ', request: creditRequest },
-      { status: 201 }
-    );
+    const msg =
+      type === 'VERIFY_IDENTITY'
+        ? 'ส่งคำขอยืนยันตัวตนสำเร็จ รอการตรวจสอบ'
+        : 'ส่งคำขอเติมเงินสำเร็จ รอการตรวจสอบ';
+
+    return NextResponse.json({ message: msg, request: creditRequest }, { status: 201 });
   } catch (error) {
     console.error('Create credit request error:', error);
     return NextResponse.json({ message: 'เกิดข้อผิดพลาด' }, { status: 500 });

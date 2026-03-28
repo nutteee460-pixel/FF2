@@ -29,6 +29,8 @@ export async function GET() {
             name: 'SUPER',
             price7Days: 5,
             price14Days: 5,
+            price15Days: 90,
+            price30Days: 150,
             description: 'แสดงช่องที่ 1 (บนสุด) ระยะเวลา 7/14 วัน',
             isActive: true,
           },
@@ -36,10 +38,39 @@ export async function GET() {
             name: 'MODEL',
             price7Days: 5,
             price14Days: 5,
+            price15Days: 90,
+            price30Days: 150,
             description: 'แสดงช่องที่ 2 ระยะเวลา 7/14 วัน',
             isActive: true,
           },
+          {
+            name: 'VERIFY',
+            price7Days: 50,
+            price14Days: 0,
+            price15Days: 90,
+            price30Days: 150,
+            description: 'ยืนยันตัวตน (วันใช้งานทั่วไป) 7 / 15 / 30 วัน',
+            isActive: true,
+          },
         ],
+      });
+      packages = await prisma.package.findMany({
+        where: { isActive: true },
+        orderBy: { name: 'asc' },
+      });
+    }
+
+    if (!packages.some((p) => p.name === 'VERIFY')) {
+      await prisma.package.create({
+        data: {
+          name: 'VERIFY',
+          price7Days: 50,
+          price14Days: 0,
+          price15Days: 90,
+          price30Days: 150,
+          description: 'ยืนยันตัวตน (วันใช้งานทั่วไป) 7 / 15 / 30 วัน',
+          isActive: true,
+        },
       });
       packages = await prisma.package.findMany({
         where: { isActive: true },

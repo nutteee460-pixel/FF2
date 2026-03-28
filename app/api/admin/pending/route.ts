@@ -53,6 +53,12 @@ export async function GET() {
             name: true,
           },
         },
+        profile: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
       },
       orderBy: { createdAt: 'asc' },
       take: 100,

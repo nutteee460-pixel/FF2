@@ -131,16 +131,26 @@ export const creditTopupSchema = z.object({
   proof: z.string().min(1, 'กรุณาอัพโหลดสลิป'),
 });
 
-/** POST /api/credits — รองรับ TOPUP + ซื้อ Super/Model (7/14 วัน) */
+/** POST /api/credits — TOPUP + Super/Model (7/14) + ยืนยันตัวตน (7/15/30) */
 export const creditCreateSchema = z
   .object({
-    type: z.enum(['TOPUP', 'PURCHASE_SUPER', 'PURCHASE_MODEL']),
+    type: z.enum(['TOPUP', 'PURCHASE_SUPER', 'PURCHASE_MODEL', 'VERIFY_IDENTITY']),
     amount: z.number().int().min(1, 'กรุณากรอกจำนวนวัน').max(3650),
     profileId: z.string().min(1, 'กรุณาเลือกโปรไฟล์'),
     proof: z.string().min(1, 'กรุณาอัพโหลดสลิป'),
   })
   .superRefine((data, ctx) => {
     if (data.type === 'TOPUP') return;
+    if (data.type === 'VERIFY_IDENTITY') {
+      if (![7, 15, 30].includes(data.amount)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'ยืนยันตัวตนเลือกได้เฉพาะ 7 / 15 / 30 วัน',
+          path: ['amount'],
+        });
+      }
+      return;
+    }
     if (data.amount !== 7 && data.amount !== 14) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

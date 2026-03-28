@@ -90,7 +90,7 @@ model CreditHistory {
   userId    String
   profileId String?  // โปรไฟล์ที่ซื้อวันให้ (nullable สำหรับรายการเก่า)
   amount    Int      // Days added
-  type      String   // TOPUP, PURCHASE_SUPER, PURCHASE_MODEL
+  type      String   // TOPUP, PURCHASE_SUPER, PURCHASE_MODEL, VERIFY_IDENTITY
   proof     String?  // Payment slip image URL
   status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
   adminNotes String?
@@ -123,9 +123,11 @@ model Settings {
 
 model Package {
   id          String   @id @default(cuid())
-  name        String   // SUPER, MODEL
+  name        String   // SUPER, MODEL, VERIFY
   price7Days  Int      @default(5)   // ราคา 7 วัน (บาท)
-  price14Days Int      @default(5)   // ราคา 14 วัน (บาท)
+  price14Days Int      @default(5)   // ราคา 14 วัน — Super/Model
+  price15Days Int      @default(90)  // ราคา 15 วัน — แพ็คเกจ VERIFY
+  price30Days Int      @default(150) // ราคา 30 วัน — แพ็คเกจ VERIFY
   description String?              // คำอธิบายแพ็คเกจ
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())

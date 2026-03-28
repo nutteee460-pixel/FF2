@@ -15,6 +15,7 @@ import {
   Save,
   Star,
   Gem,
+  Shield,
   Check,
   X,
 } from 'lucide-react';
@@ -24,6 +25,8 @@ interface Package {
   name: string;
   price7Days: number;
   price14Days: number;
+  price15Days: number;
+  price30Days: number;
   description: string | null;
   isActive: boolean;
 }
@@ -70,6 +73,8 @@ export default function AdminPackagesPage() {
           id: pkg.id,
           price7Days: editForm.price7Days,
           price14Days: editForm.price14Days,
+          price15Days: editForm.price15Days ?? 90,
+          price30Days: editForm.price30Days ?? 150,
           description: editForm.description,
           isActive: editForm.isActive,
         }),
@@ -203,20 +208,32 @@ export default function AdminPackagesPage() {
                     <div className="flex items-center gap-2">
                       {pkg.name === 'SUPER' ? (
                         <Star className="w-6 h-6 text-yellow-500" />
-                      ) : (
+                      ) : pkg.name === 'MODEL' ? (
                         <Gem className="w-6 h-6 text-purple-500" />
+                      ) : (
+                        <Shield className="w-6 h-6 text-amber-600" />
                       )}
-                      <span className="font-bold text-lg">{pkg.name === 'SUPER' ? 'Super' : 'Model'}</span>
+                      <span className="font-bold text-lg">
+                        {pkg.name === 'SUPER' ? 'Super' : pkg.name === 'MODEL' ? 'Model' : 'ยืนยันตัวตน'}
+                      </span>
                     </div>
                     <span className={`px-2 py-1 rounded text-sm ${pkg.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                       {pkg.isActive ? 'เปิดใช้งาน' : 'ปิดใช้งาน'}
                     </span>
                   </div>
                   <p className="text-gray-600 mb-2">{pkg.description}</p>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">ราคา 7 วัน: <strong className="text-primary-500">{pkg.price7Days} บาท</strong></span>
-                    <span className="text-gray-500">ราคา 14 วัน: <strong className="text-primary-500">{pkg.price14Days} บาท</strong></span>
-                  </div>
+                  {pkg.name === 'VERIFY' ? (
+                    <div className="flex flex-wrap gap-2 text-sm">
+                      <span className="text-gray-500">7 วัน: <strong className="text-primary-500">{pkg.price7Days} ฿</strong></span>
+                      <span className="text-gray-500">15 วัน: <strong className="text-primary-500">{pkg.price15Days ?? 90} ฿</strong></span>
+                      <span className="text-gray-500">30 วัน: <strong className="text-primary-500">{pkg.price30Days ?? 150} ฿</strong></span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500">ราคา 7 วัน: <strong className="text-primary-500">{pkg.price7Days} บาท</strong></span>
+                      <span className="text-gray-500">ราคา 14 วัน: <strong className="text-primary-500">{pkg.price14Days} บาท</strong></span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -225,31 +242,63 @@ export default function AdminPackagesPage() {
             {editForm?.id && (
               <div className="bg-white rounded-xl shadow-md p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-6">
-                  แก้ไข {editForm.name === 'SUPER' ? 'Super' : 'Model'}
+                  แก้ไข{' '}
+                  {editForm.name === 'SUPER'
+                    ? 'Super'
+                    : editForm.name === 'MODEL'
+                      ? 'Model'
+                      : 'ยืนยันตัวตน'}
                 </h2>
 
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div
+                    className={`grid grid-cols-1 gap-4 ${editForm.name === 'VERIFY' ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}
+                  >
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">ราคา 7 วัน (บาท)</label>
                       <input
                         type="number"
                         min="0"
-                        value={editForm.price7Days || ''}
+                        value={editForm.price7Days ?? ''}
                         onChange={(e) => setEditForm({ ...editForm, price7Days: Number(e.target.value) })}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">ราคา 14 วัน (บาท)</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={editForm.price14Days || ''}
-                        onChange={(e) => setEditForm({ ...editForm, price14Days: Number(e.target.value) })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                      />
-                    </div>
+                    {editForm.name === 'VERIFY' ? (
+                      <>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">ราคา 15 วัน (บาท)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={editForm.price15Days ?? ''}
+                            onChange={(e) => setEditForm({ ...editForm, price15Days: Number(e.target.value) })}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">ราคา 30 วัน (บาท)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            value={editForm.price30Days ?? ''}
+                            onChange={(e) => setEditForm({ ...editForm, price30Days: Number(e.target.value) })}
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">ราคา 14 วัน (บาท)</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={editForm.price14Days ?? ''}
+                          onChange={(e) => setEditForm({ ...editForm, price14Days: Number(e.target.value) })}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div>

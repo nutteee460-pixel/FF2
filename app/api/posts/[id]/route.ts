@@ -1,8 +1,24 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
-import { extractSessionFromCookie } from '@/lib/session';
+import { extractSessionFromCookie, type SessionData } from '@/lib/session';
 import { postUpdateSchema } from '@/lib/schemas';
+
+/** ผู้ใช้ล็อกอินปกติ หรือแอดมินที่ล็อกอินผ่านหน้า admin เท่านั้น */
+async function getUserOrAdminSession(): Promise<SessionData | null> {
+  const cookieStore = await cookies();
+  const userCk = cookieStore.get('ff2_session');
+  if (userCk?.value) {
+    const d = extractSessionFromCookie(userCk.value);
+    if (d) return d;
+  }
+  const adminCk = cookieStore.get('ff2_admin_session');
+  if (adminCk?.value) {
+    const d = extractSessionFromCookie(adminCk.value);
+    if (d?.role === 'ADMIN') return d;
+  }
+  return null;
+}
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
@@ -33,15 +49,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get('ff2_session');
-    if (!sessionCookie) {
-      return NextResponse.json({ message: 'กรุณาเข้าสู่ระบบ' }, { status: 401 });
-    }
-
-    const sessionData = extractSessionFromCookie(sessionCookie.value);
+    const sessionData = await getUserOrAdminSession();
     if (!sessionData) {
-      return NextResponse.json({ message: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่' }, { status: 401 });
+      return NextResponse.json({ message: 'กรุณาเข้าสู่ระบบ' }, { status: 401 });
     }
 
     const body = await request.json();
@@ -126,15 +136,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
-    const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get('ff2_session');
-    if (!sessionCookie) {
-      return NextResponse.json({ message: 'กรุณาเข้าสู่ระบบ' }, { status: 401 });
-    }
-
-    const sessionData = extractSessionFromCookie(sessionCookie.value);
+    const sessionData = await getUserOrAdminSession();
     if (!sessionData) {
-      return NextResponse.json({ message: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่' }, { status: 401 });
+      return NextResponse.json({ message: 'กรุณาเข้าสู่ระบบ' }, { status: 401 });
     }
 
     const post = await prisma.post.findUnique({ where: { id: params.id } });

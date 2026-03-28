@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
+import { extractSessionFromCookie } from '@/lib/session';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    const sessionCookie = cookies().get('session');
-    if (!sessionCookie) {
-      return NextResponse.json({ message: 'กรุณาเข้าสู่ระบบ' }, { status: 401 });
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get('ff2_admin_session');
+    if (!sessionCookie?.value) {
+      return NextResponse.json({ message: 'กรุณาเข้าสู่ระบบแอดมิน' }, { status: 401 });
     }
 
-    const sessionData = JSON.parse(Buffer.from(sessionCookie.value, 'base64').toString());
-
-    // Only admin can approve/reject
-    if (sessionData.role !== 'ADMIN') {
+    const sessionData = extractSessionFromCookie(sessionCookie.value);
+    if (!sessionData || sessionData.role !== 'ADMIN') {
       return NextResponse.json({ message: 'คุณไม่มีสิทธิ์ดำเนินการ' }, { status: 403 });
     }
 
@@ -22,20 +22,23 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 
     const body = await request.json();
-    const { status, adminNotes, profileId } = body;
+    const { status, adminNotes } = body;
+    const bodyProfileId = typeof body.profileId === 'string' ? body.profileId : undefined;
+
+    if (!status || !['APPROVED', 'REJECTED'].includes(status)) {
+      return NextResponse.json({ message: 'สถานะไม่ถูกต้อง' }, { status: 400 });
+    }
 
     let profileToUpdate = null;
 
-    // Get the profile to update
     if (status === 'APPROVED') {
-      if (profileId) {
-        // Use specified profileId
+      const targetId = bodyProfileId || creditRequest.profileId || undefined;
+      if (targetId) {
         profileToUpdate = await prisma.profile.findFirst({
-          where: { id: profileId, userId: creditRequest.userId },
+          where: { id: targetId, userId: creditRequest.userId },
         });
       }
       if (!profileToUpdate) {
-        // Fallback to first profile
         profileToUpdate = await prisma.profile.findFirst({
           where: { userId: creditRequest.userId },
         });
@@ -54,20 +57,26 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
     await prisma.creditHistory.update({
       where: { id: params.id },
-      data: { status, adminNotes },
+      data: {
+        status,
+        ...(typeof adminNotes === 'string' ? { adminNotes: adminNotes.slice(0, 1000) } : {}),
+      },
     });
 
     if (status === 'APPROVED' && profileToUpdate) {
       const now = new Date();
       let newExpiry: Date;
 
-      if (creditRequest.type === 'TOPUP') {
-        const currentExpiry = profileToUpdate.freeExpiry ? new Date(profileToUpdate.freeExpiry) : null;
+      const extendFreeDays = () => {
+        const currentExpiry = profileToUpdate!.freeExpiry ? new Date(profileToUpdate!.freeExpiry) : null;
         if (currentExpiry && currentExpiry > now) {
-          newExpiry = new Date(currentExpiry.getTime() + creditRequest.amount * 24 * 60 * 60 * 1000);
-        } else {
-          newExpiry = new Date(now.getTime() + creditRequest.amount * 24 * 60 * 60 * 1000);
+          return new Date(currentExpiry.getTime() + creditRequest.amount * 24 * 60 * 60 * 1000);
         }
+        return new Date(now.getTime() + creditRequest.amount * 24 * 60 * 60 * 1000);
+      };
+
+      if (creditRequest.type === 'TOPUP' || creditRequest.type === 'VERIFY_IDENTITY') {
+        newExpiry = extendFreeDays();
         await prisma.profile.update({
           where: { id: profileToUpdate.id },
           data: { freeExpiry: newExpiry },

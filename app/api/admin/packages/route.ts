@@ -17,7 +17,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    const packages = await prisma.package.findMany({
+    let packages = await prisma.package.findMany({
       orderBy: { name: 'asc' },
     });
 
@@ -28,6 +28,8 @@ export async function GET() {
             name: 'SUPER',
             price7Days: 5,
             price14Days: 5,
+            price15Days: 90,
+            price30Days: 150,
             description: 'แสดงช่องที่ 1 (บนสุด) ระยะเวลา 7/14 วัน',
             isActive: true,
           },
@@ -35,7 +37,18 @@ export async function GET() {
             name: 'MODEL',
             price7Days: 5,
             price14Days: 5,
+            price15Days: 90,
+            price30Days: 150,
             description: 'แสดงช่องที่ 2 ระยะเวลา 7/14 วัน',
+            isActive: true,
+          },
+          {
+            name: 'VERIFY',
+            price7Days: 50,
+            price14Days: 0,
+            price15Days: 90,
+            price30Days: 150,
+            description: 'ยืนยันตัวตน (วันใช้งานทั่วไป) 7 / 15 / 30 วัน',
             isActive: true,
           },
         ],
@@ -45,6 +58,24 @@ export async function GET() {
         orderBy: { name: 'asc' },
       });
       return NextResponse.json(created);
+    }
+
+    const hasVerify = packages.some((p) => p.name === 'VERIFY');
+    if (!hasVerify) {
+      await prisma.package.create({
+        data: {
+          name: 'VERIFY',
+          price7Days: 50,
+          price14Days: 0,
+          price15Days: 90,
+          price30Days: 150,
+          description: 'ยืนยันตัวตน (วันใช้งานทั่วไป) 7 / 15 / 30 วัน',
+          isActive: true,
+        },
+      });
+      packages = await prisma.package.findMany({
+        orderBy: { name: 'asc' },
+      });
     }
 
     return NextResponse.json(packages);
@@ -69,7 +100,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { id, price7Days, price14Days, description, isActive } = body;
+    const { id, price7Days, price14Days, price15Days, price30Days, description, isActive } = body;
 
     // Validate input
     if (!id) {
@@ -81,6 +112,8 @@ export async function PUT(req: NextRequest) {
       data: {
         price7Days: Math.max(0, Number(price7Days) || 0),
         price14Days: Math.max(0, Number(price14Days) || 0),
+        price15Days: Math.max(0, Number(price15Days) || 0),
+        price30Days: Math.max(0, Number(price30Days) || 0),
         description: String(description || '').slice(0, 500),
         isActive: Boolean(isActive),
       },
@@ -108,10 +141,9 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { name, price7Days, price14Days, description } = body;
+    const { name, price7Days, price14Days, price15Days, price30Days, description } = body;
 
-    // Validate required fields
-    if (!name || !['SUPER', 'MODEL'].includes(name)) {
+    if (!name || !['SUPER', 'MODEL', 'VERIFY'].includes(name)) {
       return NextResponse.json({ error: 'Invalid package name' }, { status: 400 });
     }
 
@@ -120,6 +152,8 @@ export async function POST(req: NextRequest) {
         name,
         price7Days: Math.max(0, Number(price7Days) || 0),
         price14Days: Math.max(0, Number(price14Days) || 0),
+        price15Days: Math.max(0, Number(price15Days) || 0),
+        price30Days: Math.max(0, Number(price30Days) || 0),
         description: String(description || '').slice(0, 500),
         isActive: true,
       },
